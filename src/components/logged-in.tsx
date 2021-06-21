@@ -1,8 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
+import { User } from "../types";
 
 interface LoggedInProps {
-  user: any;
-  onLogout: Dispatch<SetStateAction<any>>;
+  user: User;
+  onLogout: Dispatch<SetStateAction<User | null>>;
 }
 
 const LoggedIn: React.FC<LoggedInProps> = ({ user, onLogout }) => {

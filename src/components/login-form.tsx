@@ -6,11 +6,12 @@ import React, {
   useRef,
   useState,
 } from "react";
-import validator from "validator";
+import { validateEmail } from "../helpers/validate-email";
+import { User } from "../types";
 import Error from "./error";
 
 interface LoginFormProps {
-  onLoginSuccess: Dispatch<SetStateAction<any>>;
+  onLoginSuccess: Dispatch<SetStateAction<User | null>>;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
@@ -22,7 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      validateEmail(username);
+      setEmailError(validateEmail(username));
     }, 250);
 
     return () => {
@@ -39,24 +40,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     }
 
     try {
-      const res = await axios.post(
+      const { data } = await axios.post(
         "https://api.getcountapp.com/api/v1/authenticate",
         { username, password }
       );
-      onLoginSuccess(res.data.user);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      const { user }: { user: User } = data;
+      onLoginSuccess(user);
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (err) {
       setRequestError(err.message);
     }
-  };
-
-  const validateEmail = (input: string) => {
-    if (!validator.isEmail(input)) {
-      setEmailError("Invalid email.");
-      return;
-    }
-    setEmailError("");
-    return;
   };
 
   return (

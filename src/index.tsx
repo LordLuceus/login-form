@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import LoggedIn from "./components/logged-in";
 import LoginForm from "./components/login-form";
+import { User } from "./types";
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const loggedInUser = localStorage.getItem("user");

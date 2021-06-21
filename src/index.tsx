@@ -1,17 +1,27 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { useEffect, useState } from "react";
+import ReactDOM from "react-dom";
+import LoggedIn from "./components/logged-in";
+import LoginForm from "./components/login-form";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const App = () => {
+  const [user, setUser] = useState(null);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  useEffect(() => {
+    const loggedInUser = localStorage.getItem("user");
+    if (loggedInUser) {
+      setUser(JSON.parse(loggedInUser));
+    }
+  }, []);
+
+  if (user) {
+    return <LoggedIn user={user} onLogout={setUser} />;
+  }
+
+  return (
+    <div>
+      <LoginForm onLoginSuccess={setUser} />
+    </div>
+  );
+};
+
+ReactDOM.render(<App />, document.querySelector("#root"));
